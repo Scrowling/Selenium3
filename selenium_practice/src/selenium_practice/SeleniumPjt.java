@@ -15,10 +15,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SeleniumPjt {
     public static void main(String[] args) {
-        // WebDriver 珥덇린�솕
+        // WebDriver start
         WebDriver driver = new ChromeDriver();
         
-        // �븘�걧�썾�뜑 �쎒�럹�씠吏� �뿴湲�
+        // access accuweather.com
         driver.get("https://www.accuweather.com/ko/kr/south-korea-weather");
         
         WebElement searchInput = driver.findElement(By.cssSelector("div.featured-search-bar.featured-search > div.searchbar-content > form > input"));
@@ -33,11 +33,11 @@ public class SeleniumPjt {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement placeBtn = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("body > div > div.two-column-page-content > div.page-column-1 > div.page-content.content-module > div.locations-list.content-module > a:nth-child(1)")));
         
-        // JavaScriptExecutor瑜� �궗�슜�븯�뿬 �슂�냼 �겢由�
+        // JavaScriptExecutor
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].click();", placeBtn);
         
-        // �뜲�씠�꽣 �씫�뼱�삤湲�
+        // data read
         String dateSelector = "div.date > p:nth-child(2)";
         List<WebElement> items1 = driver.findElements(By.cssSelector(dateSelector));
         
@@ -46,23 +46,21 @@ public class SeleniumPjt {
         
         String rainChanceSelector = "div.precip:last-child";
         List<WebElement> items3 = driver.findElements(By.cssSelector(rainChanceSelector));
-        List<String> rainChances = new ArrayList();
         
-        // �뜲�씠�꽣 異쒕젰
-        for (WebElement item : items3) {
-            rainChances.add(item.getText());
-        }
-        
-		for (WebElement item : items1) {
-			System.out.println(item.getText());
-		}
+        // data print
 		
-		for (WebElement item : items2) {
-			System.out.println(item.getText());
-		}
-		
-		for (WebElement item : items3) {
-			System.out.println(item.getText());
+		for (int i = 0;i < items1.size();i++) {
+			String rainChanceText = items3.get(i).getText();
+			String emoji;
+			int rainChance = Integer.parseInt(rainChanceText.replace("%", ""));
+			if (rainChance < 40) {
+				emoji = "그냥 가";
+			} else if (rainChance < 70) {
+				emoji = "우산...챙겨야 할지도?";
+			} else {
+				emoji = "우산 챙겨";
+			}
+			System.out.printf("%s|%-20s|%s %s\n", items1.get(i).getText(), items2.get(i).getText(), items3.get(i).getText(), emoji);
 		}
     }
 }
